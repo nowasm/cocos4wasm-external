@@ -6,15 +6,30 @@ cmake_minimum_required(VERSION 3.5...3.16)
 
 project(boost_container VERSION "${BOOST_SUPERPROJECT_VERSION}" LANGUAGES C CXX)
 
-add_library(boost_container
-  alloc_lib.c
-  dlmalloc.cpp
-  global_resource.cpp
-  monotonic_buffer_resource.cpp
-  pool_resource.cpp
-  synchronized_pool_resource.cpp
-  unsynchronized_pool_resource.cpp
-)
+if(EMSCRIPTEN)
+  # wasm is single-threaded; synchronized_pool_resource pulls in thread_mutex.hpp
+  # which has Windows-only __declspec/__stdcall declarations.  Exclude it and
+  # disable thread detection so boost config doesn't try to pick a threading API.
+  add_library(boost_container
+    alloc_lib.c
+    dlmalloc.cpp
+    global_resource.cpp
+    monotonic_buffer_resource.cpp
+    pool_resource.cpp
+    unsynchronized_pool_resource.cpp
+  )
+  target_compile_definitions(boost_container PUBLIC BOOST_DISABLE_THREADS)
+else()
+  add_library(boost_container
+    alloc_lib.c
+    dlmalloc.cpp
+    global_resource.cpp
+    monotonic_buffer_resource.cpp
+    pool_resource.cpp
+    synchronized_pool_resource.cpp
+    unsynchronized_pool_resource.cpp
+  )
+endif()
 
 add_library(Boost::container ALIAS boost_container)
 
