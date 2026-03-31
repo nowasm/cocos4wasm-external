@@ -21,8 +21,17 @@ typedef struct uv_handle_s  uv_handle_t;
 typedef void (*uv_connection_cb)(uv_stream_t *server, int status);
 typedef void (*uv_close_cb)(uv_handle_t *handle);
 
-struct sockaddr;
-struct sockaddr_in;
+struct sockaddr {
+    unsigned short sa_family;
+    char sa_data[14];
+};
+
+struct sockaddr_in {
+    short          sin_family;
+    unsigned short sin_port;
+    struct { unsigned int s_addr; } sin_addr;
+    char           sin_zero[8];
+};
 
 typedef struct {
     char name[256];
