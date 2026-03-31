@@ -296,6 +296,16 @@ if(USE_DEBUG_RENDERER)
   list(APPEND CC_EXTERNAL_LIBS freetype)
 endif()
 
+include(${CMAKE_CURRENT_LIST_DIR}/../quickjs/CMakeLists.txt)
+list(APPEND CC_EXTERNAL_LIBS quickjs)
+
+# Stub uv (libuv) target; jsb_global_init.cpp includes uv.h but
+# actual libuv calls are only in debugger paths not reached on WASM.
+if(NOT TARGET uv)
+    add_library(uv INTERFACE)
+    target_include_directories(uv INTERFACE ${CMAKE_CURRENT_LIST_DIR}/include)
+endif()
+
 list(APPEND CC_EXTERNAL_LIBS
     jpeg
     png
