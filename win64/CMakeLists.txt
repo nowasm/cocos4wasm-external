@@ -194,7 +194,7 @@ elseif(USE_SE_V8 OR USE_SE_JSVM)
 
     set(se_libs_name v8)
 else()
-    message(FATAL_ERROR "Only V8 is supported!")
+    message(STATUS "No script engine library needed (pure C++ mode)")
 endif()
 
 ############################# glslang #############################
