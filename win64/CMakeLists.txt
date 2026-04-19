@@ -16,14 +16,16 @@ set_target_properties(dbgeng PROPERTIES
   IMPORTED_LOCATION ${CMAKE_CURRENT_LIST_DIR}/libs/dbgeng.dll
 )
 
-if (USE_DEBUG_RENDERER)
+# FreeType is also used by the 2D text layer (runtime TTF rasterisation
+# under cocos/2d/text/TtfFont), so it's linked unconditionally now —
+# used to be gated on USE_DEBUG_RENDERER when only the debug line
+# renderer referenced it.
 add_library(freetype STATIC IMPORTED GLOBAL)
 
 set_target_properties(freetype PROPERTIES
   IMPORTED_LOCATION ${CMAKE_CURRENT_LIST_DIR}/libs/freetype.lib
   INTERFACE_INCLUDE_DIRECTORIES ${CMAKE_CURRENT_LIST_DIR}/include/freetype
 )
-endif()
 
 add_library(glew32 SHARED IMPORTED GLOBAL)
 
@@ -232,11 +234,9 @@ else()
   set(PhysXSDK)
 endif()
 
-if (USE_DEBUG_RENDERER)
 list(APPEND CC_EXTERNAL_LIBS
     freetype
 )
-endif()
 
 list(APPEND CC_EXTERNAL_LIBS
     glew32
